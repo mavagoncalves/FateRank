@@ -1,30 +1,82 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="FateRank.Views.MainPage">
+             x:Class="FateRank.Views.MainPage"
+             BackgroundColor="White">
 
     <ScrollView>
         <VerticalStackLayout Spacing="25" Padding="30" VerticalOptions="Center">
             
-            <Label Text="FATERANK: WAR" FontSize="32" HorizontalOptions="Center" FontAttributes="Bold" />
+            <Label Text="FATERANK: WAR" 
+                   FontSize="32" 
+                   HorizontalOptions="Center" 
+                   FontAttributes="Bold" 
+                   TextColor="Black" />
 
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="40">
-                <VerticalStackLayout Spacing="10">
-                    <Label x:Name="PlayerCountLabel" Text="Player: 26" HorizontalOptions="Center" />
-                    <Image x:Name="PlayerCardImage" Source="dotnet_bot.png" HeightRequest="200" WidthRequest="150" />
+                <VerticalStackLayout Spacing="10" WidthRequest="150">
+                    <Label x:Name="PlayerCountLabel" 
+                           Text="Player: 26" 
+                           HorizontalOptions="Center" 
+                           TextColor="Black" 
+                           FontAttributes="Bold" />
+                    
+                    <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 10">
+                        <Image x:Name="PlayerCardImage" 
+                               Source="dotnet_bot.png" 
+                               HeightRequest="210" 
+                               WidthRequest="150" 
+                               Aspect="AspectFit"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="10">
-                    <Label x:Name="ComputerCountLabel" Text="CPU: 26" HorizontalOptions="Center" />
-                    <Image x:Name="ComputerCardImage" Source="dotnet_bot.png" HeightRequest="200" WidthRequest="150" />
+                <VerticalStackLayout Spacing="10" WidthRequest="150">
+                    <Label x:Name="ComputerCountLabel" 
+                           Text="CPU: 26" 
+                           HorizontalOptions="Center" 
+                           TextColor="Black" 
+                           FontAttributes="Bold" />
+
+                    <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 10">
+                        <Image x:Name="ComputerCardImage" 
+                               Source="dotnet_bot.png" 
+                               HeightRequest="210" 
+                               WidthRequest="150" 
+                               Aspect="AspectFit"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
                 </VerticalStackLayout>
             </HorizontalStackLayout>
 
-            <Label x:Name="StatusLabel" Text="Press Play to Start!" FontSize="20" HorizontalOptions="Center" TextColor="Gray" />
+            <Label x:Name="StatusLabel" 
+                   Text="Press Play to Start!" 
+                   FontSize="18" 
+                   HorizontalOptions="Center" 
+                   TextColor="#444444" 
+                   FontAttributes="Italic" />
 
-            <Button x:Name="PlayBtn" Text="PLAY ROUND" Clicked="OnPlayClicked" HorizontalOptions="Center" WidthRequest="200" BackgroundColor="Purple" />
+            <Button x:Name="PlayBtn" 
+                    Text="PLAY ROUND" 
+                    Clicked="OnPlayClicked" 
+                    HorizontalOptions="Center" 
+                    WidthRequest="220" 
+                    HeightRequest="50"
+                    CornerRadius="25"
+                    BackgroundColor="#FFF4A7F4" 
+                    TextColor="White"
+                    FontAttributes="Bold" />
             
-            <Button x:Name="RestartBtn" Text="RESTART" Clicked="OnRestartClicked" HorizontalOptions="Center" IsVisible="False" />
+            <Button x:Name="RestartBtn" 
+                    Text="RESTART GAME" 
+                    Clicked="OnRestartClicked" 
+                    HorizontalOptions="Center" 
+                    WidthRequest="220"
+                    BackgroundColor="#BBBBBB"
+                    TextColor="Black"
+                    IsVisible="False" />
 
         </VerticalStackLayout>
     </ScrollView>
