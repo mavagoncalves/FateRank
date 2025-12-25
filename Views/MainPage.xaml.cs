@@ -14,20 +14,19 @@ public partial class MainPage : ContentPage
         _engine.InitializeGame(); // Setup the decks
     }
 
-    private void OnPlayClicked(object sender, EventArgs e)
+    private async void OnPlayClicked(object sender, EventArgs e)
     {
         Card pCard, cCard;
     	string result = _engine.PlayRound(out pCard, out cCard);
 
-    // DEBUG LINE: This will print the filename to your terminal
-		if (pCard != null) 
-		{
-			System.Diagnostics.Debug.WriteLine($"LOOKING FOR FILE: {pCard.ImageSource}");
-			Console.WriteLine($"LOOKING FOR FILE: {pCard.ImageSource}");
-		}
+    	if (pCard != null) 
+    	{
+        // This will pop up a window on your Mac telling us the filename
+        	await DisplayAlert("Debug Info", $"Looking for: {pCard.ImageSource}", "OK");
+    	}
 
-		PlayerCardImage.Source = pCard?.ImageSource;
-		ComputerCardImage.Source = cCard?.ImageSource;
+    	PlayerCardImage.Source = pCard?.ImageSource;
+    	ComputerCardImage.Source = cCard?.ImageSource;
 
         // Update the counts
         PlayerCountLabel.Text = $"Player: {_engine.PlayerCardCount}";
