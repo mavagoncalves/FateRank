@@ -23,4 +23,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <MauiImage Include="Resources\Images\card_*.png" Resize="false" />
+    
+    <MauiImage Include="Resources\Images\dotnet_bot.png" />
+</ItemGroup>
+
 </Project>
