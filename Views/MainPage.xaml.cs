@@ -17,11 +17,17 @@ public partial class MainPage : ContentPage
     private void OnPlayClicked(object sender, EventArgs e)
     {
         Card pCard, cCard;
-        string result = _engine.PlayRound(out pCard, out cCard);
+    	string result = _engine.PlayRound(out pCard, out cCard);
 
-        // Update the Images using that ImageSource property we made in the Card model
-        PlayerCardImage.Source = pCard?.ImageSource;
-        ComputerCardImage.Source = cCard?.ImageSource;
+    // DEBUG LINE: This will print the filename to your terminal
+		if (pCard != null) 
+		{
+			System.Diagnostics.Debug.WriteLine($"LOOKING FOR FILE: {pCard.ImageSource}");
+			Console.WriteLine($"LOOKING FOR FILE: {pCard.ImageSource}");
+		}
+
+		PlayerCardImage.Source = pCard?.ImageSource;
+		ComputerCardImage.Source = cCard?.ImageSource;
 
         // Update the counts
         PlayerCountLabel.Text = $"Player: {_engine.PlayerCardCount}";
