@@ -10,23 +10,23 @@ namespace FateRank.Models
         {
             get 
             {
-                string displayRank = Rank;
+                // Special case for Jokers
+                if (Rank.ToLower() == "joker")
+                {
+                    return $"card_joker_{Suit.ToLower()}.png"; // e.g., card_joker_black.png
+                }
 
-                // Handle numbers 2-9 to add the "0" (e.g., "02")
+                string displayRank = Rank.ToLower();
                 if (int.TryParse(Rank, out int rankNum) && rankNum < 10)
                 {
                     displayRank = rankNum.ToString("D2"); 
                 }
-                // Handle face cards to match your uppercase filenames (Q, K, A, J)
-                else if (Rank.ToLower() == "jack") displayRank = "J";
-                else if (Rank.ToLower() == "queen") displayRank = "Q";
-                else if (Rank.ToLower() == "king") displayRank = "K";
-                else if (Rank.ToLower() == "ace") displayRank = "A";
-                else if (Rank == "10") displayRank = "10";
+                else if (displayRank == "jack") displayRank = "j";
+                else if (displayRank == "queen") displayRank = "q";
+                else if (displayRank == "king") displayRank = "k";
+                else if (displayRank == "ace") displayRank = "a";
 
-                // This must match "card_suit_RANK.png"
-                // Using .ToUpper() for displayRank to match your "Q" and "J" files
-                return $"card_{Suit.ToLower()}_{displayRank.ToUpper()}.png";
+                return $"card_{Suit.ToLower()}_{displayRank}.png";
             }
         }
 

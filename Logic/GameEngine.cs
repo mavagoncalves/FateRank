@@ -19,10 +19,10 @@ namespace FateRank.Logic
             Shuffle(deck);
 
             // Deal 26 cards to each
-            for (int i = 0; i < 26; i++)
+            for (int i = 0; i < 27; i++)
             {
                 PlayerDeck.Enqueue(deck[i]);
-                ComputerDeck.Enqueue(deck[i + 26]);
+                ComputerDeck.Enqueue(deck[i + 27]);
             }
         }
 
@@ -39,6 +39,10 @@ namespace FateRank.Logic
                     newDeck.Add(new Card(suit, ranks[i], i + 2));
                 }
             }
+
+            newDeck.Add(new Card("black", "joker", 15));
+            newDeck.Add(new Card("red", "joker", 15));
+
             return newDeck;
         }
 
