@@ -10,8 +10,10 @@ namespace FateRank.Logic
         public Queue<Card> PlayerDeck { get; set; } = new Queue<Card>();
         public Queue<Card> ComputerDeck { get; set; } = new Queue<Card>();
         public List<Card> LootPile { get; set; } = new List<Card>();
-        public int PlayerCardCount => PlayerDeck.Count;
-        public int ComputerCardCount => ComputerDeck.Count;
+        public int PlayerCardCount => PlayerDeck.Count + PlayerWinPile.Count;
+        public int ComputerCardCount => ComputerDeck.Count + ComputerWinPile.Count;
+        public List<Card> PlayerWinPile { get; set; } = new List<Card>();
+        public List<Card> ComputerWinPile { get; set; } = new List<Card>();
 
         public void InitializeGame()
         {
@@ -25,6 +27,7 @@ namespace FateRank.Logic
                 ComputerDeck.Enqueue(deck[i + 27]);
             }
         }
+
 
         private List<Card> CreateFullDeck()
         {
@@ -46,6 +49,7 @@ namespace FateRank.Logic
             return newDeck;
         }
 
+
         private void Shuffle(List<Card> list)
         {
             Random rng = new Random();
@@ -60,54 +64,49 @@ namespace FateRank.Logic
             }
         }
 
+
         public string PlayRound(out Card pCard, out Card cCard)
         {
-            // 1. Safety check: does everyone have cards?
+            // 1. Move won cards back to the main deck if empty
+            RefillDeckIfEmpty(PlayerDeck, PlayerWinPile);
+            RefillDeckIfEmpty(ComputerDeck, ComputerWinPile);
+
+            // 2. Check for Game Over
             if (PlayerDeck.Count == 0 || ComputerDeck.Count == 0)
             {
-                pCard = null; 
-                cCard = null;
+                pCard = null; cCard = null;
                 return "Game Over!";
             }
 
-            // 2. Draw the top cards
             pCard = PlayerDeck.Dequeue();
             cCard = ComputerDeck.Dequeue();
-
-            // 3. Put them in the temporary loot pile
             LootPile.Add(pCard);
             LootPile.Add(cCard);
 
-            // 4. Compare values
             if (pCard.Value > cCard.Value)
             {
-                AwardLoot(PlayerDeck);
+                AwardLoot(PlayerWinPile); // Give to WIN PILE
                 return "You win the round!";
             }
             else if (cCard.Value > pCard.Value)
             {
-                AwardLoot(ComputerDeck);
+                AwardLoot(ComputerWinPile); // Give to WIN PILE
                 return "Computer wins the round!";
             }
-            else
-            {
-                // This triggers the WAR logic in your UI
-                return "WAR!";
-            }
+            
+            return "WAR!";
         }
 
-        private void AwardLoot(Queue<Card> winnerDeck)
+
+        private void AwardLoot(List<Card> targetWinPile)
         {
-            // 1. Loop through every card that was played in this round (or War)
             foreach (var card in LootPile)
             {
-                // 2. Add it to the bottom of the winner's hand
-                winnerDeck.Enqueue(card);
+                targetWinPile.Add(card);
             }
-
-            // 3. Clear the middle pile so it's empty for the next round
             LootPile.Clear();
         }
+
 
         public string ExecuteWar(out Card pFinal, out Card cFinal)
         {
@@ -133,18 +132,34 @@ namespace FateRank.Logic
 
             if (pFinal.Value > cFinal.Value)
             {
-                AwardLoot(PlayerDeck);
+                AwardLoot(PlayerWinPile);
                 return "You won the WAR!";
             }
             else if (cFinal.Value > pFinal.Value)
             {
-                AwardLoot(ComputerDeck);
+                AwardLoot(ComputerWinPile);
                 return "Computer won the WAR!";
             }
             else
             {
                 // Double War! (Recursion)
                 return "DOUBLE WAR! Draw again!";
+            }
+        }
+
+
+        private void RefillDeckIfEmpty(Queue<Card> deck, List<Card> winPile)
+        {
+            if (deck.Count == 0 && winPile.Count > 0)
+            {
+                Shuffle(winPile); // Existing shuffle method
+                
+                foreach (var card in winPile)
+                {
+                    deck.Enqueue(card); // Move from list to queue
+                }
+                
+                winPile.Clear(); // Empty the win pile
             }
         }
     }

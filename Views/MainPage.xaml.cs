@@ -14,7 +14,7 @@ public partial class MainPage : ContentPage
         _engine.InitializeGame(); // Setup the decks
     }
 
-    private async void OnPlayClicked(object sender, EventArgs e)
+    private void OnPlayClicked(object sender, EventArgs e)
     {
         Card pCard, cCard;
     	string result = _engine.PlayRound(out pCard, out cCard);
