@@ -14,46 +14,80 @@ public partial class MainPage : ContentPage
         _engine.InitializeGame(); // Setup the decks
     }
 
-    private void OnPlayClicked(object sender, EventArgs e)
-    {
-        Card pCard, cCard;
-    	string result = _engine.PlayRound(out pCard, out cCard);
+    private async void OnPlayClicked(object sender, EventArgs e)
+	{
+		Card pCard, cCard;
+		string result = _engine.PlayRound(out pCard, out cCard);
 
-    	PlayerCardImage.Source = pCard?.ImageSource;
-    	ComputerCardImage.Source = cCard?.ImageSource;
+		// Initial reveal of the drawn cards
+		PlayerCardImage.Source = pCard?.ImageSource;
+		ComputerCardImage.Source = cCard?.ImageSource;
+		StatusLabel.Text = result;
 
-        // Update the counts
-        PlayerCountLabel.Text = $"Player: {_engine.PlayerCardCount}";
-        ComputerCountLabel.Text = $"CPU: {_engine.ComputerCardCount}";
+		if (result == "WAR!")
+		{
+			PlayBtn.IsEnabled = false;
+			
+			// Pause for 2 seconds so the user can see the cards that caused the tie
+			await Task.Delay(2000); 
 
-        // Handle the "War" scenario
-        if (result == "WAR!")
-        {
-            StatusLabel.Text = "IT IS WAR! DRAWING EXTRA CARDS...";
-            // We'll call the war logic immediately to resolve it
-            result = _engine.ExecuteWar(out pCard, out cCard);
-            
-            // Show the final cards that decided the war
-            PlayerCardImage.Source = pCard?.ImageSource;
-            ComputerCardImage.Source = cCard?.ImageSource;
-        }
+			// Show War Visual and update status
+			WarPileVisual.IsVisible = true;
+			StatusLabel.Text = "STAKES ARE RISING...";
+			await Task.Delay(2500); // 2.5 seconds to process the transition
 
-        StatusLabel.Text = result;
+			StatusLabel.Text = "DEALING 3 FACE-DOWN CARDS...";
+			await Task.Delay(2500); // 2.5 seconds for dramatic effect
 
-        // Check if game is over
-        if (result.Contains("Game Over") || _engine.PlayerCardCount == 0 || _engine.ComputerCardCount == 0)
-        {
-            PlayBtn.IsEnabled = false;
-            RestartBtn.IsVisible = true;
-        }
-    }
+			// Execute the actual War calculation
+			string warResult = _engine.ExecuteWar(out Card pWar, out Card cWar);
+			
+			// Final reveal of the War outcome
+			PlayerCardImage.Source = pWar?.ImageSource;
+			ComputerCardImage.Source = cWar?.ImageSource;
+			StatusLabel.Text = warResult;
 
+			// Leave the final result on screen for 3 seconds before resetting
+			await Task.Delay(3000);
+			WarPileVisual.IsVisible = false;
+			PlayBtn.IsEnabled = true;
+		}
+
+		// Refresh Deck counts
+		PlayerCountLabel.Text = $"Deck: {_engine.PlayerCardCount}";
+		ComputerCountLabel.Text = $"Deck: {_engine.ComputerCardCount}";
+
+		CheckForWinner();
+	}
+
+	private void CheckForWinner()
+	{
+		// If you have all 54 cards, you win!
+		if (_engine.PlayerCardCount >= 54)
+		{
+			ShowEndGame("CONGRATULATIONS!\nYOU CLEARED THE TABLE");
+		}
+		// If the computer has all 54 cards, you lose.
+		else if (_engine.ComputerCardCount >= 54)
+		{
+			ShowEndGame("GAME OVER\nTHE HOUSE WINS");
+		}
+	}
+
+	private void ShowEndGame(string message)
+	{
+		// This fills the text in your Poker-themed overlay
+		WinnerText.Text = message;
+		// This makes the dark overlay visible over the table
+		GameOverOverlay.IsVisible = true;
+		// This stops the user from clicking "Deal" after the game is over
+		PlayBtn.IsEnabled = false;
+	}
     private void OnRestartClicked(object sender, EventArgs e)
     {
         _engine = new GameEngine();
         _engine.InitializeGame();
         PlayBtn.IsEnabled = true;
-        RestartBtn.IsVisible = false;
         StatusLabel.Text = "Game Reset! Press Play.";
     }
 }

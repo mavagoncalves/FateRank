@@ -2,82 +2,58 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FateRank.Views.MainPage"
-             BackgroundColor="White">
+             BackgroundColor="#0a3d1d">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="25" Padding="30" VerticalOptions="Center">
+    <Grid>
+        <Grid RowDefinitions="*, Auto, *" Padding="20">
             
-            <Label Text="FATERANK: WAR" 
-                   FontSize="32" 
-                   HorizontalOptions="Center" 
-                   FontAttributes="Bold" 
-                   TextColor="Black" />
+            <VerticalStackLayout Grid.Row="0" VerticalOptions="Start" Spacing="8">
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
+                    <Label Text="COMPUTER" TextColor="White" FontSize="20" FontAttributes="Bold" />
+                    <Label x:Name="ComputerCountLabel" Text="Deck: 27" TextColor="#FFD700" FontSize="20" />
+                </HorizontalStackLayout>
+                
+                <Border Stroke="#FFD700" StrokeThickness="4" StrokeShape="RoundRectangle 15" 
+                        WidthRequest="145" HeightRequest="195" HorizontalOptions="Center" BackgroundColor="#072a14">
+                    <Image x:Name="ComputerCardImage" Aspect="AspectFit" HeightRequest="185" />
+                </Border>
+            </VerticalStackLayout>
 
-            <HorizontalStackLayout HorizontalOptions="Center" Spacing="40">
-                <VerticalStackLayout Spacing="10" WidthRequest="150">
-                    <Label x:Name="PlayerCountLabel" 
-                           Text="Player: 26" 
-                           HorizontalOptions="Center" 
-                           TextColor="Black" 
-                           FontAttributes="Bold" />
-                    
-                    <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 10">
-                        <Image x:Name="PlayerCardImage" 
-                               Source="dotnet_bot.png" 
-                               HeightRequest="210" 
-                               WidthRequest="150" 
-                               Aspect="AspectFit"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
-                    </Border>
-                </VerticalStackLayout>
+            <VerticalStackLayout Grid.Row="1" VerticalOptions="Center" Spacing="20">
+                <Label x:Name="StatusLabel" Text="READY FOR THE DEAL?" FontSize="22" TextColor="White" 
+                       HorizontalOptions="Center" FontAttributes="Bold" HorizontalTextAlignment="Center" />
 
-                <VerticalStackLayout Spacing="10" WidthRequest="150">
-                    <Label x:Name="ComputerCountLabel" 
-                           Text="CPU: 26" 
-                           HorizontalOptions="Center" 
-                           TextColor="Black" 
-                           FontAttributes="Bold" />
+                <HorizontalStackLayout x:Name="WarPileVisual" IsVisible="False" HorizontalOptions="Center">
+                    <Frame BackgroundColor="#8b0000" BorderColor="#FFD700" CornerRadius="12" Padding="20,10">
+                        <Label Text="WAR DETECTED: STAKING +3 HIDDEN CARDS " TextColor="White" FontAttributes="Bold" />
+                    </Frame>
+                </HorizontalStackLayout>
 
-                    <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 10">
-                        <Image x:Name="ComputerCardImage" 
-                               Source="dotnet_bot.png" 
-                               HeightRequest="210" 
-                               WidthRequest="150" 
-                               Aspect="AspectFit"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
-                    </Border>
-                </VerticalStackLayout>
-            </HorizontalStackLayout>
+                <Button x:Name="PlayBtn" Text="DEAL" Clicked="OnPlayClicked" BackgroundColor="#b30000" 
+                        TextColor="White" WidthRequest="200" HeightRequest="65" CornerRadius="32" 
+                        FontSize="22" FontAttributes="Bold" BorderColor="#FFD700" BorderWidth="1" />
+            </VerticalStackLayout>
 
-            <Label x:Name="StatusLabel" 
-                   Text="Press Play to Start!" 
-                   FontSize="18" 
-                   HorizontalOptions="Center" 
-                   TextColor="#444444" 
-                   FontAttributes="Italic" />
+            <VerticalStackLayout Grid.Row="2" VerticalOptions="End" Spacing="8">
+                <Border Stroke="#FFD700" StrokeThickness="4" StrokeShape="RoundRectangle 15" 
+                        WidthRequest="145" HeightRequest="195" HorizontalOptions="Center" BackgroundColor="#072a14">
+                    <Image x:Name="PlayerCardImage" Aspect="AspectFit" HeightRequest="185" />
+                </Border>
 
-            <Button x:Name="PlayBtn" 
-                    Text="PLAY ROUND" 
-                    Clicked="OnPlayClicked" 
-                    HorizontalOptions="Center" 
-                    WidthRequest="220" 
-                    HeightRequest="50"
-                    CornerRadius="25"
-                    BackgroundColor="#FFF4A7F4" 
-                    TextColor="White"
-                    FontAttributes="Bold" />
-            
-            <Button x:Name="RestartBtn" 
-                    Text="RESTART GAME" 
-                    Clicked="OnRestartClicked" 
-                    HorizontalOptions="Center" 
-                    WidthRequest="220"
-                    BackgroundColor="#BBBBBB"
-                    TextColor="Black"
-                    IsVisible="False" />
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
+                    <Label Text="YOU" TextColor="White" FontSize="20" FontAttributes="Bold" />
+                    <Label x:Name="PlayerCountLabel" Text="Deck: 27" TextColor="#FFD700" FontSize="20" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Grid>
 
-        </VerticalStackLayout>
-    </ScrollView>
+        <ContentView x:Name="GameOverOverlay" IsVisible="False" BackgroundColor="#EE000000">
+            <VerticalStackLayout VerticalOptions="Center" Spacing="30">
+                <Label x:Name="WinnerText" TextColor="#FFD700" FontSize="36" FontAttributes="Bold" 
+                       HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                <Button Text="NEW GAME" Clicked="OnRestartClicked" BackgroundColor="#FFD700" 
+                        TextColor="Black" WidthRequest="220" HeightRequest="50" CornerRadius="15" FontAttributes="Bold"/>
+            </VerticalStackLayout>
+        </ContentView>
+    </Grid>
 </ContentPage>
