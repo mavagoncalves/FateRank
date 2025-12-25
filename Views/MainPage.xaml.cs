@@ -19,12 +19,6 @@ public partial class MainPage : ContentPage
         Card pCard, cCard;
     	string result = _engine.PlayRound(out pCard, out cCard);
 
-    	if (pCard != null) 
-    	{
-        // This will pop up a window on your Mac telling us the filename
-        	await DisplayAlert("Debug Info", $"Looking for: {pCard.ImageSource}", "OK");
-    	}
-
     	PlayerCardImage.Source = pCard?.ImageSource;
     	ComputerCardImage.Source = cCard?.ImageSource;
 
