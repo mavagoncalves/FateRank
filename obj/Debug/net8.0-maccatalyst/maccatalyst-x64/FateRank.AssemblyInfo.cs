@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FateRank")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+21225144b1c338c4fdaab553be1024be4f2a765b")]
 [assembly: System.Reflection.AssemblyProductAttribute("FateRank")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FateRank")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

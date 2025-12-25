@@ -1,0 +1,24 @@
+# .NET / C# related
+[Bb]in/
+[Oo]bj/
+out/
+publish/
+*.user
+*.userosscache
+*.sln.docstates
+
+# macOS related
+.DS_Store
+.AppleDouble
+.LSOverride
+*-*-*-*-*-* # Ignores temporary Mac Catalyst build GUIDs
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+.history/
+.ionide/
+
+# MAUI / Mobile related
+Generated\ Files/
+_ActivePublish/
