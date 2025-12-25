@@ -22,3 +22,5 @@ publish/
 # MAUI / Mobile related
 Generated\ Files/
 _ActivePublish/
+
+!Resources/Images/*.png
