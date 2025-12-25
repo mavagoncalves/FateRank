@@ -10,6 +10,8 @@ namespace FateRank.Logic
         public Queue<Card> PlayerDeck { get; set; } = new Queue<Card>();
         public Queue<Card> ComputerDeck { get; set; } = new Queue<Card>();
         public List<Card> LootPile { get; set; } = new List<Card>();
+        public int PlayerCardCount => PlayerDeck.Count;
+        public int ComputerCardCount => ComputerDeck.Count;
 
         public void InitializeGame()
         {
@@ -51,6 +53,42 @@ namespace FateRank.Logic
                 Card value = list[k];
                 list[k] = list[n];
                 list[n] = value;
+            }
+        }
+
+        public string PlayRound(out Card pCard, out Card cCard)
+        {
+            // 1. Safety check: does everyone have cards?
+            if (PlayerDeck.Count == 0 || ComputerDeck.Count == 0)
+            {
+                pCard = null; 
+                cCard = null;
+                return "Game Over!";
+            }
+
+            // 2. Draw the top cards
+            pCard = PlayerDeck.Dequeue();
+            cCard = ComputerDeck.Dequeue();
+
+            // 3. Put them in the temporary loot pile
+            LootPile.Add(pCard);
+            LootPile.Add(cCard);
+
+            // 4. Compare values
+            if (pCard.Value > cCard.Value)
+            {
+                AwardLoot(PlayerDeck);
+                return "You win the round!";
+            }
+            else if (cCard.Value > pCard.Value)
+            {
+                AwardLoot(ComputerDeck);
+                return "Computer wins the round!";
+            }
+            else
+            {
+                // This triggers the WAR logic in your UI
+                return "WAR!";
             }
         }
 
