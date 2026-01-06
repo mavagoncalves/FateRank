@@ -45,6 +45,14 @@ public partial class MainPage : ContentPage
 
 			// Execute the actual War calculation
 			string warResult = _engine.ExecuteWar(out Card pWar, out Card cWar);
+
+			// check if someone ran out of cards completely during the war
+			if (pWar == null || cWar == null)
+			{
+				StatusLabel.Text = warResult;
+				CheckForWinner();
+				return; // STOP
+			}
 			
 			// Final reveal of the War outcome
 			PlayerCardImage.Source = pWar?.ImageSource;
