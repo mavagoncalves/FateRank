@@ -108,44 +108,70 @@ namespace FateRank.Logic
         }
 
 
-        public string ExecuteWar(out Card pFinal, out Card cFinal)
+    public string ExecuteWar(out Card pFinal, out Card cFinal)
+    {
+        // Check if we need to refill  for WAR from win pile
+        // If deck has < 4 cards BUT we have a win pile, we must refill NOW.
+        if (PlayerDeck.Count < 4 && PlayerWinPile.Count > 0)
         {
-            // Check if players have enough cards to go to war (at least 4 cards)
-            if (PlayerDeck.Count < 4 || ComputerDeck.Count < 4)
-            {
-                pFinal = null; cFinal = null;
-                return "Not enough cards for WAR! Game Over.";
-            }
-
-            // Draw 3 cards each and put them in the LootPile (face down)
-            for (int i = 0; i < 3; i++)
-            {
-                LootPile.Add(PlayerDeck.Dequeue());
-                LootPile.Add(ComputerDeck.Dequeue());
-            }
-
-            // Draw the 4th card (face up) to decide the winner
-            pFinal = PlayerDeck.Dequeue();
-            cFinal = ComputerDeck.Dequeue();
-            LootPile.Add(pFinal);
-            LootPile.Add(cFinal);
-
-            if (pFinal.Value > cFinal.Value)
-            {
-                AwardLoot(PlayerWinPile);
-                return "You won the WAR!";
-            }
-            else if (cFinal.Value > pFinal.Value)
-            {
-                AwardLoot(ComputerWinPile);
-                return "Computer won the WAR!";
-            }
-            else
-            {
-                // Double War! (Recursion)
-                return "DOUBLE WAR! Draw again!";
-            }
+            Shuffle(PlayerWinPile);
+            foreach (var c in PlayerWinPile) PlayerDeck.Enqueue(c);
+            PlayerWinPile.Clear();
         }
+        
+        if (ComputerDeck.Count < 4 && ComputerWinPile.Count > 0)
+        {
+            Shuffle(ComputerWinPile);
+            foreach (var c in ComputerWinPile) ComputerDeck.Enqueue(c);
+            ComputerWinPile.Clear();
+        }
+
+        // check if players are TRULY out of cards
+        if (PlayerDeck.Count < 4)
+        {
+            pFinal = null; cFinal = null;
+            // Force count to 0 to ensure the UI knows the game is over
+            PlayerDeck.Clear(); 
+            PlayerWinPile.Clear();
+            return "Not enough cards! YOU LOSE.";
+        }
+        if (ComputerDeck.Count < 4)
+        {
+            pFinal = null; cFinal = null;
+            ComputerDeck.Clear();
+            ComputerWinPile.Clear();
+            return "Not enough cards! CPU LOSES.";
+        }
+
+        // continue war logic (draw 3 face down)
+        for (int i = 0; i < 3; i++)
+        {
+            LootPile.Add(PlayerDeck.Dequeue());
+            LootPile.Add(ComputerDeck.Dequeue());
+        }
+
+        // draw the deciding card (Face up)
+        pFinal = PlayerDeck.Dequeue();
+        cFinal = ComputerDeck.Dequeue();
+        LootPile.Add(pFinal);
+        LootPile.Add(cFinal);
+
+        // determine Winner
+        if (pFinal.Value > cFinal.Value)
+        {
+            AwardLoot(PlayerWinPile);
+            return "YOU WON THE WAR!";
+        }
+        else if (cFinal.Value > pFinal.Value)
+        {
+            AwardLoot(ComputerWinPile);
+            return "CPU WON THE WAR!";
+        }
+        else
+        {
+            return "WAR!"; //double war
+        }
+    }
 
 
         private void RefillDeckIfEmpty(Queue<Card> deck, List<Card> winPile)
