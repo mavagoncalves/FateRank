@@ -35,25 +35,22 @@ public partial class MainPage : ContentPage
 
 			// Show War Visual and update status
 			WarPileVisual.IsVisible = true;
-    		
-
 			StatusLabel.Text = (StatusLabel.Text == "WAR!") ? "WAR DETECTED!" : "DOUBLE WAR DETECTED!";
         	await Task.Delay(2000);
 
-
-			StatusLabel.Text = "DEALING 3 FACE-DOWN CARDS...";
 			// Turn the cards face-down to signal War has started
+			StatusLabel.Text = "DEALING 3 FACE-DOWN CARDS...";
 			PlayerCardImage.Source = "card_back.png";
     		ComputerCardImage.Source = "card_back.png";
 			await Task.Delay(2500); // 2.5 seconds for dramatic effect
 
 			// Execute the actual War calculation
-			string warResult = _engine.ExecuteWar(out Card pWar, out Card cWar);
+			result = _engine.ExecuteWar(out Card pWar, out Card cWar);
 
 			// check if someone ran out of cards completely during the war
 			if (pWar == null || cWar == null)
 			{
-				StatusLabel.Text = warResult;
+				StatusLabel.Text = result;
 				CheckForWinner();
 				return; // STOP
 			}
@@ -61,13 +58,13 @@ public partial class MainPage : ContentPage
 			// Final reveal of the War outcome
 			PlayerCardImage.Source = pWar?.ImageSource;
 			ComputerCardImage.Source = cWar?.ImageSource;
-			StatusLabel.Text = warResult;
+			StatusLabel.Text = result;
 
-			// Leave the final result on screen for 3 seconds before resetting
-			await Task.Delay(4000);
-			WarPileVisual.IsVisible = false;
-			PlayBtn.IsEnabled = true;
 		}
+
+		// Leave the final result on screen for 3 seconds before resetting
+		await Task.Delay(4000);
+		WarPileVisual.IsVisible = false;
 
 		// Refresh Deck counts
 		PlayerCountLabel.Text = $"Deck: {_engine.PlayerCardCount}";
