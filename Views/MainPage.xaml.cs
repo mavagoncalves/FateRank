@@ -5,13 +5,16 @@ namespace FateRank.Views;
 
 public partial class MainPage : ContentPage
 {
-    // Create an instance of your logic
     private GameEngine _engine = new GameEngine();
 
     public MainPage()
     {
         InitializeComponent();
         _engine.InitializeGame(); // Setup the decks
+
+		// Show the backs of the cards before the first deal
+		PlayerCardImage.Source = "card_back.png";
+		ComputerCardImage.Source = "card_back.png";
     }
 
     private async void OnPlayClicked(object sender, EventArgs e)

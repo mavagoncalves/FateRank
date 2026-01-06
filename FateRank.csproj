@@ -25,6 +25,6 @@
 
   <ItemGroup>
     <MauiImage Include="Resources\Images\card_*.png" Resize="false" />
-</ItemGroup>
+  </ItemGroup>
 
 </Project>
