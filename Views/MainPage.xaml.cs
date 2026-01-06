@@ -107,15 +107,24 @@ public partial class MainPage : ContentPage
 
 	private void CheckForWinner()
 	{
-		// If you have all 54 cards, you win!
-		if (_engine.PlayerCardCount >= 54)
+		// PLAYER WINS
+		if (_engine.PlayerCardCount >= 54 || _engine.ComputerCardCount == 0)
 		{
-			ShowEndGame("CONGRATULATIONS!\nYOU CLEARED THE TABLE");
+			WinnerText.TextColor = Colors.Gold; // Gold text for Winner
+			WinnerText.Text = "CONGRATULATIONS!\nYOU CLEARED THE TABLE 🏆";
+			
+			GameOverOverlay.IsVisible = true;
+			PlayBtn.IsEnabled = false;
 		}
-		// If the computer has all 54 cards, you lose.
-		else if (_engine.ComputerCardCount >= 54)
+		
+		// PLAYER LOOSES
+		else if (_engine.ComputerCardCount >= 54 || _engine.PlayerCardCount == 0)
 		{
-			ShowEndGame("GAME OVER\nTHE HOUSE WINS");
+			WinnerText.TextColor = Colors.Red;
+			WinnerText.Text = "GAME OVER\nYOU RAN OUT OF CARDS 💀";
+			
+			GameOverOverlay.IsVisible = true;
+			PlayBtn.IsEnabled = false;
 		}
 	}
 

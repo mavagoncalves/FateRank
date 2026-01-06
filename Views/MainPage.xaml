@@ -25,7 +25,7 @@
 
                 <HorizontalStackLayout x:Name="WarPileVisual" IsVisible="False" HorizontalOptions="Center">
                     <Frame BackgroundColor="#8b0000" BorderColor="#FFD700" CornerRadius="12" Padding="20,10">
-                        <Label Text="WAR DETECTED: STAKING +3 HIDDEN CARDS " TextColor="White" FontAttributes="Bold" />
+                        <Label Text="STAKING +3 HIDDEN CARDS " TextColor="White" FontAttributes="Bold" />
                     </Frame>
                 </HorizontalStackLayout>
 
@@ -47,12 +47,28 @@
             </VerticalStackLayout>
         </Grid>
 
-        <ContentView x:Name="GameOverOverlay" IsVisible="False" BackgroundColor="#EE000000">
+        <ContentView x:Name="GameOverOverlay" 
+                    Grid.Row="0" 
+                    Grid.RowSpan="3" 
+                    IsVisible="False" 
+                    BackgroundColor="Black"> 
+
             <VerticalStackLayout VerticalOptions="Center" Spacing="30">
-                <Label x:Name="WinnerText" TextColor="#FFD700" FontSize="36" FontAttributes="Bold" 
-                       HorizontalOptions="Center" HorizontalTextAlignment="Center" />
-                <Button Text="NEW GAME" Clicked="OnRestartClicked" BackgroundColor="#FFD700" 
-                        TextColor="Black" WidthRequest="220" HeightRequest="50" CornerRadius="15" FontAttributes="Bold"/>
+                <Label x:Name="WinnerText" 
+                    TextColor="#FFD700" 
+                    FontSize="36" 
+                    FontAttributes="Bold" 
+                    HorizontalOptions="Center" 
+                    HorizontalTextAlignment="Center" />
+                    
+                <Button Text="NEW GAME" 
+                        Clicked="OnRestartClicked" 
+                        BackgroundColor="#FFD700" 
+                        TextColor="Black" 
+                        WidthRequest="220" 
+                        HeightRequest="50" 
+                        CornerRadius="15" 
+                        FontAttributes="Bold"/>
             </VerticalStackLayout>
         </ContentView>
     </Grid>
