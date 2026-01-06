@@ -34,11 +34,12 @@ public partial class MainPage : ContentPage
 			// Pause for 2 seconds so the user can see the cards that caused the tie
 			await Task.Delay(2000); 
 
+			// Turn the cards face-down to signal War has started
+    		PlayerCardImage.Source = "card_back.png";
+    		ComputerCardImage.Source = "card_back.png";
+
 			// Show War Visual and update status
 			WarPileVisual.IsVisible = true;
-			StatusLabel.Text = "STAKES ARE RISING...";
-			await Task.Delay(2500); // 2.5 seconds to process the transition
-
 			StatusLabel.Text = "DEALING 3 FACE-DOWN CARDS...";
 			await Task.Delay(2500); // 2.5 seconds for dramatic effect
 
@@ -51,7 +52,7 @@ public partial class MainPage : ContentPage
 			StatusLabel.Text = warResult;
 
 			// Leave the final result on screen for 3 seconds before resetting
-			await Task.Delay(3000);
+			await Task.Delay(4000);
 			WarPileVisual.IsVisible = false;
 			PlayBtn.IsEnabled = true;
 		}
