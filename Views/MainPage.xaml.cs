@@ -10,16 +10,31 @@ public partial class MainPage : ContentPage
     public MainPage()
     {
         InitializeComponent();
-        _engine.InitializeGame(); // Setup the decks
+        StartNewGame();
+    }
 
-		// Show the backs of the cards before the first deal
+	private void StartNewGame()
+	{
+		// Reset the Engine Logic
+		_engine = new Logic.GameEngine();
+		_engine.InitializeGame(); 
+
+		// Reset the Visuals
 		PlayerCardImage.Source = "card_back.png";
 		ComputerCardImage.Source = "card_back.png";
-    }
+		
+		PlayerCountLabel.Text = "Deck: 27";
+		ComputerCountLabel.Text = "Deck: 27";
+		StatusLabel.Text = "NEW GAME! DEAL TO START.";
+
+		// Reset Game Over State
+		GameOverOverlay.IsVisible = false;
+		PlayBtn.IsEnabled = true;
+		WarPileVisual.IsVisible = false;
+	}
 
     private async void OnPlayClicked(object sender, EventArgs e)
 	{
-		PlayBtn.IsEnabled = false;
 		Card pCard, cCard;
 		string result = _engine.PlayRound(out pCard, out cCard);
 
@@ -30,6 +45,7 @@ public partial class MainPage : ContentPage
 
 		while (result == "WAR!")
 		{
+			PlayBtn.IsEnabled = false;
 			// Pause for 2 seconds so the user can see the cards that caused the tie
 			await Task.Delay(2000); 
 
@@ -59,23 +75,18 @@ public partial class MainPage : ContentPage
 			PlayerCardImage.Source = pWar?.ImageSource;
 			ComputerCardImage.Source = cWar?.ImageSource;
 			StatusLabel.Text = result;
-
 		}
 
 		// Leave the final result on screen for 3 seconds before resetting
-		await Task.Delay(4000);
+		await Task.Delay(3000);
 		WarPileVisual.IsVisible = false;
+		PlayBtn.IsEnabled = true;
 
 		// Refresh Deck counts
 		PlayerCountLabel.Text = $"Deck: {_engine.PlayerCardCount}";
 		ComputerCountLabel.Text = $"Deck: {_engine.ComputerCardCount}";
 
 		CheckForWinner();
-
-		if (!GameOverOverlay.IsVisible)
-		{
-			PlayBtn.IsEnabled = true;
-		}
 	}
 
 	private void CheckForWinner()
@@ -94,18 +105,15 @@ public partial class MainPage : ContentPage
 
 	private void ShowEndGame(string message)
 	{
-		// This fills the text in your Poker-themed overlay
 		WinnerText.Text = message;
 		// This makes the dark overlay visible over the table
 		GameOverOverlay.IsVisible = true;
 		// This stops the user from clicking "Deal" after the game is over
 		PlayBtn.IsEnabled = false;
 	}
-    private void OnRestartClicked(object sender, EventArgs e)
-    {
-        _engine = new GameEngine();
-        _engine.InitializeGame();
-        PlayBtn.IsEnabled = true;
-        StatusLabel.Text = "Game Reset! Press Play.";
-    }
+
+	private void OnRestartClicked(object sender, EventArgs e)
+	{
+		StartNewGame(); 
+	}
 }
