@@ -19,6 +19,7 @@ public partial class MainPage : ContentPage
 
     private async void OnPlayClicked(object sender, EventArgs e)
 	{
+		PlayBtn.IsEnabled = false;
 		Card pCard, cCard;
 		string result = _engine.PlayRound(out pCard, out cCard);
 
@@ -27,20 +28,23 @@ public partial class MainPage : ContentPage
 		ComputerCardImage.Source = cCard?.ImageSource;
 		StatusLabel.Text = result;
 
-		if (result == "WAR!")
+		while (result == "WAR!")
 		{
-			PlayBtn.IsEnabled = false;
-			
 			// Pause for 2 seconds so the user can see the cards that caused the tie
 			await Task.Delay(2000); 
 
-			// Turn the cards face-down to signal War has started
-    		PlayerCardImage.Source = "card_back.png";
-    		ComputerCardImage.Source = "card_back.png";
-
 			// Show War Visual and update status
 			WarPileVisual.IsVisible = true;
+    		
+
+			StatusLabel.Text = (StatusLabel.Text == "WAR!") ? "WAR DETECTED!" : "DOUBLE WAR DETECTED!";
+        	await Task.Delay(2000);
+
+
 			StatusLabel.Text = "DEALING 3 FACE-DOWN CARDS...";
+			// Turn the cards face-down to signal War has started
+			PlayerCardImage.Source = "card_back.png";
+    		ComputerCardImage.Source = "card_back.png";
 			await Task.Delay(2500); // 2.5 seconds for dramatic effect
 
 			// Execute the actual War calculation
@@ -70,6 +74,11 @@ public partial class MainPage : ContentPage
 		ComputerCountLabel.Text = $"Deck: {_engine.ComputerCardCount}";
 
 		CheckForWinner();
+
+		if (!GameOverOverlay.IsVisible)
+		{
+			PlayBtn.IsEnabled = true;
+		}
 	}
 
 	private void CheckForWinner()
