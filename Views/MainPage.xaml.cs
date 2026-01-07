@@ -1,13 +1,13 @@
-﻿namespace FateRank.Views;
+﻿using Microsoft.Maui.Controls;
+using FateRank.ViewModels;
 
-/// <summary>
-/// The code-behind for the MainPage.
-/// In MVVM, this should contain minimal logic as the ViewModel handles the behavior.
-/// </summary>
+namespace FateRank.Views;
+
 public partial class MainPage : ContentPage
 {
     public MainPage()
     {
         InitializeComponent();
+		BindingContext = new MainViewModel();
     }
 }

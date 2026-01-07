@@ -1,4 +1,6 @@
-﻿namespace FateRank;
+﻿using FateRank.Views;
+using FateRank.ViewModels;
+namespace FateRank;
 
 public partial class App : Application
 {
@@ -6,7 +8,12 @@ public partial class App : Application
     {
         InitializeComponent();
 
-        // This tells the app to load AppShell, which then loads the MainPage
-        MainPage = new AppShell(); 
+        var gamePage = new MainPage();
+
+        // Connect the "Brain" to the "Face" manually
+        gamePage.BindingContext = new MainViewModel();
+
+        // Force the app to show this page immediately
+        MainPage = gamePage;
     }
 }
