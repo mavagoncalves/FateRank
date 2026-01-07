@@ -26,7 +26,7 @@ FateRank is a cross-platform card game built with **.NET MAUI** and **C#**, feat
 To run this project, you need the following installed on your machine:
 
 1.  **Code Editor:** [Visual Studio 2022](https://visualstudio.microsoft.com/) (Windows/Mac) or [VS Code](https://code.visualstudio.com/).
-2.  **.NET 8.0 SDK:** [Download here](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
+2.  **.NET 8.0 SDK:** [Download here](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
 3.  **MAUI Workloads:**
     Open your terminal or command prompt and run:
     ```bash
@@ -35,7 +35,7 @@ To run this project, you need the following installed on your machine:
 4.  **(Windows Only) Enable Developer Mode:**
     *Required to side-load and run MAUI apps during development.*
     * Open Windows **Settings**.
-    * Go to **Privacy & security** > **For developers**.
+    * Go to **System** > **Advanced**.
     * Toggle **Developer Mode** to **On**
 
 ---
@@ -44,7 +44,7 @@ To run this project, you need the following installed on your machine:
 
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/mavagoncalves/FateRank.git](https://github.com/mavagoncalves/FateRank.git)
+    git clone https://github.com/mavagoncalves/FateRank.git
     cd FateRank
     ```
 
