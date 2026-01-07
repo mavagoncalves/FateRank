@@ -39,7 +39,7 @@ To run this project, you need the following installed on your machine:
 
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/YourUsername/FateRank.git](https://github.com/YourUsername/FateRank.git)
+    git clone [https://github.com/mavagoncalves/FateRank.git](https://github.com/mavagoncalves/FateRank.git)
     cd FateRank
     ```
 
