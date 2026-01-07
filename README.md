@@ -27,16 +27,21 @@ To run this project, you need the following installed on your machine:
 
 1.  **Code Editor:** [Visual Studio 2022](https://visualstudio.microsoft.com/) (Windows/Mac) or [VS Code](https://code.visualstudio.com/).
 2.  **.NET 8.0 SDK:** [Download here](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
-3.  **MAUI Workloads:**
+4.  **MAUI Workloads:**
     Open your terminal or command prompt and run:
     ```bash
     dotnet workload install maui
     ```
-4.  **(Windows Only) Enable Developer Mode:**
+5.  **(Windows Only) 1. Enable Developer Mode:**
     *Required to side-load and run MAUI apps during development.*
     * Open Windows **Settings**.
     * Go to **System** > **Advanced**.
     * Toggle **Developer Mode** to **On**
+
+    **2. Windows App Runtime SDK:** 
+    *[Download latest](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/downloads).
+    * Run as administrator.
+
 
 ---
 
@@ -57,11 +62,12 @@ To run this project, you need the following installed on your machine:
     
     * **On macOS:**
         ```bash
-        dotnet build -t:Run -f net8.0-maccatalyst -p:_SuppressSdkCheck=true
+        rm -rf bin/ obj/ && dotnet build -t:Run -f net8.0-maccatalyst -p:_SuppressSdkCheck=true
         ```
     * **On Windows:**
         ```bash
-        dotnet build -t:Run -f net8.0-windows10.0.19041.0
+        Remove-Item -Recurse -Force bin, obj
+        dotnet run -f net8.0-windows10.0.19041.0
         ```
 
 ---
