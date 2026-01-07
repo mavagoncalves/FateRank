@@ -32,6 +32,11 @@ To run this project, you need the following installed on your machine:
     ```bash
     dotnet workload install maui
     ```
+4.  **(Windows Only) Enable Developer Mode:**
+    *Required to side-load and run MAUI apps during development.*
+    * Open Windows **Settings**.
+    * Go to **Privacy & security** > **For developers**.
+    * Toggle **Developer Mode** to **On**
 
 ---
 
@@ -55,7 +60,9 @@ To run this project, you need the following installed on your machine:
         dotnet build -t:Run -f net8.0-maccatalyst -p:_SuppressSdkCheck=true
         ```
     * **On Windows:**
-        Select "Windows Machine" in Visual Studio and press **F5**.
+        ```bash
+        dotnet build -t:Run -f net8.0-windows10.0.19041.0
+        ```
 
 ---
 
