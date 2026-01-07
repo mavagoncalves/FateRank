@@ -7,12 +7,18 @@ public partial class MainPage : ContentPage
 {
     private GameEngine _engine = new GameEngine();
 
+    /// <summary>
+    /// Initializes the UI components and starts a new game.
+    /// </summary>
     public MainPage()
     {
         InitializeComponent();
         StartNewGame();
     }
 
+	/// <summary>
+	/// Resets the game engine and updates the UI to the initial new-game state.
+	/// </summary>
 	private void StartNewGame()
 	{
 		// Reset the Engine Logic
@@ -33,6 +39,11 @@ public partial class MainPage : ContentPage
 		WarPileVisual.IsVisible = false;
 	}
 
+    /// <summary>
+    /// Handles the Play button click: plays a round, updates UI, and manages the "war" sequence when ties occur.
+    /// </summary>
+    /// <param name="sender">The Play button.</param>
+    /// <param name="e">Event arguments.</param>
     private async void OnPlayClicked(object sender, EventArgs e)
 	{
 		PlayBtn.IsEnabled = false;
@@ -105,6 +116,10 @@ public partial class MainPage : ContentPage
 		CheckForWinner();
 	}
 
+	/// <summary>
+	/// Inspects current card counts to determine if the player or computer has won,
+	///  and updates the UI accordingly.
+	/// </summary>
 	private void CheckForWinner()
 	{
 		// PLAYER WINS
@@ -128,6 +143,10 @@ public partial class MainPage : ContentPage
 		}
 	}
 
+	/// <summary>
+	/// Displays the provided end-of-game message, shows the overlay, and disables further play.
+	/// </summary>
+	/// <param name="message">The message to display to the user.</param>
 	private void ShowEndGame(string message)
 	{
 		WinnerText.Text = message;
@@ -137,6 +156,11 @@ public partial class MainPage : ContentPage
 		PlayBtn.IsEnabled = false;
 	}
 
+	/// <summary>
+	/// Handles the Restart button click and starts a new game.
+	/// </summary>
+	/// <param name="sender">The Restart button.</param>
+	/// <param name="e">Event arguments.</param>
 	private void OnRestartClicked(object sender, EventArgs e)
 	{
 		StartNewGame(); 

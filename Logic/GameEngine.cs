@@ -5,6 +5,10 @@ using FateRank.Models;
 
 namespace FateRank.Logic
 {
+    /// <summary>
+    /// This class handles all the logic of the cards and gameplay like
+    ///  dealing shuffling, executing a war, etc..
+    /// <summary>
     public class GameEngine
     {
         public Queue<Card> PlayerDeck { get; set; } = new Queue<Card>();
@@ -15,6 +19,10 @@ namespace FateRank.Logic
         public List<Card> PlayerWinPile { get; set; } = new List<Card>();
         public List<Card> ComputerWinPile { get; set; } = new List<Card>();
 
+        /// <summary>
+        /// Initializes the game by creating a full deck, shuffling it,
+        /// and dealing half the cards to the player and the computer.
+        /// </summary>
         public void InitializeGame()
         {
             var deck = CreateFullDeck();
@@ -29,6 +37,12 @@ namespace FateRank.Logic
         }
 
 
+        /// <summary>
+        /// Creates a full standard deck of cards and returns it as a list.
+        /// Includes all suits and ranks, plus two jokers. Each card has a numeric
+        /// Value property used for comparisons during gameplay.
+        /// </summary>
+        /// <returns>A list containing all cards in the deck.</returns>
         private List<Card> CreateFullDeck()
         {
             string[] suits = { "spades", "hearts", "diamonds", "clubs" };
@@ -50,6 +64,10 @@ namespace FateRank.Logic
         }
 
 
+        /// <summary>
+        /// Randomly shuffles the provided list of cards in place using the Fisher–Yates algorithm.
+        /// </summary>
+        /// <param name="list">The list of cards to shuffle.</param>
         private void Shuffle(List<Card> list)
         {
             Random rng = new Random();
@@ -65,6 +83,13 @@ namespace FateRank.Logic
         }
 
 
+        /// <summary>
+        /// Plays a single round by drawing the top card from each deck, placing them into the loot pile,
+        /// and determining the round outcome (player win, computer win, or war).
+        /// </summary>
+        /// <param name="pCard">Outputs the players card for this round.</param>
+        /// <param name="cCard">Outputs the computers card for this round.</param>
+        /// <returns>A string indicating the round result: a win message, "WAR!", or "Game Over!".</returns>
         public string PlayRound(out Card pCard, out Card cCard)
         {
             // 1. Move won cards back to the main deck if empty
@@ -98,6 +123,10 @@ namespace FateRank.Logic
         }
 
 
+        /// <summary>
+        /// Transfers all cards currently in the loot pile to the specified win pile and clears the loot pile.
+        /// </summary>
+        /// <param name="targetWinPile">The win pile that will receive the loot.</param>
         private void AwardLoot(List<Card> targetWinPile)
         {
             foreach (var card in LootPile)
@@ -108,6 +137,13 @@ namespace FateRank.Logic
         }
 
 
+        /// <summary>
+        /// Performs the 'war' sequence when two cards tie: ensures decks are refilled from win piles if needed,
+        /// places the required face-down and face-up cards into the loot pile, and determines the war outcome.
+        /// </summary>
+        /// <param name="pFinal">Outputs the player's final face-up card used to decide the war (may be null if insufficient cards).</param>
+        /// <param name="cFinal">Outputs the computer's final face-up card used to decide the war (may be null if insufficient cards).</param>
+        /// <returns>A string indicating the war outcome, or a not-enough-cards message when a player cannot continue.</returns>
         public string ExecuteWar(out Card pFinal, out Card cFinal)
         {
             // Check if we need to refill  for WAR from win pile
@@ -174,6 +210,12 @@ namespace FateRank.Logic
         }
 
 
+        /// <summary>
+        /// If the provided deck is empty and the win pile contains cards, shuffles the win pile
+        /// and moves its cards back into the deck, then clears the win pile.
+        /// </summary>
+        /// <param name="deck">The primary deck to refill.</param>
+        /// <param name="winPile">The win pile to draw cards from when refilling.</param>
         private void RefillDeckIfEmpty(Queue<Card> deck, List<Card> winPile)
         {
             if (deck.Count == 0 && winPile.Count > 0)
