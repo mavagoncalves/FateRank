@@ -6,95 +6,98 @@
              x:DataType="viewmodels:MainViewModel"
              BackgroundColor="#0a3d1d">
 
-    <Grid>
-        <Grid RowDefinitions="4*, 2*, 4*" 
-              Padding="20" 
-              RowSpacing="10">
+    <Grid RowDefinitions="*, Auto, *" Padding="10" RowSpacing="5">
 
-            <Grid Grid.Row="0" RowDefinitions="Auto, *">
+        <VerticalStackLayout Grid.Row="0" 
+                             VerticalOptions="Center" 
+                             HorizontalOptions="Center"
+                             Spacing="10">
+            
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                <Label Text="COMPUTER" TextColor="White" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"/>
+                <Label Text="{Binding ComputerScore}" TextColor="#FFD700" FontSize="18" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+
+            <Border Stroke="#FFD700" 
+                    StrokeThickness="4" 
+                    StrokeShape="RoundRectangle 15" 
+                    Padding="0"
+                    WidthRequest="240"
+                    HeightRequest="340"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    BackgroundColor="#072a14">
                 
-                <HorizontalStackLayout Grid.Row="0" HorizontalOptions="Center" Spacing="10" Margin="0,0,0,10">
-                    <Label Text="COMPUTER" TextColor="White" FontSize="20" FontAttributes="Bold" VerticalOptions="Center"/>
-                    <Label Text="{Binding ComputerScore}" TextColor="#FFD700" FontSize="20" VerticalOptions="Center"/>
-                </HorizontalStackLayout>
-
-                <Border Grid.Row="1"
-                        Stroke="#FFD700" 
-                        StrokeThickness="4" 
-                        StrokeShape="RoundRectangle 15" 
-                        Padding="0"
-                        VerticalOptions="Fill"
-                        HorizontalOptions="Center" 
-                        BackgroundColor="#072a14">
-                    
-                    <Image Source="{Binding ComputerImage}" 
-                           Aspect="AspectFit" 
-                           HorizontalOptions="Center" 
-                           VerticalOptions="Center" />
-                </Border>
-            </Grid>
+                <Image Source="{Binding ComputerImage}" 
+                       Aspect="AspectFill"
+                       HorizontalOptions="Fill" 
+                       VerticalOptions="Fill" />
+            </Border>
+        </VerticalStackLayout>
 
 
-            <VerticalStackLayout Grid.Row="1" VerticalOptions="Center" Spacing="15">
+        <VerticalStackLayout Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Center" Spacing="15">
+            
+            <Label Text="{Binding StatusText}"
+                   FontSize="24"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="Center" />
+
+            <HorizontalStackLayout IsVisible="{Binding IsWarVisible}" HorizontalOptions="Center">
+                <Frame BackgroundColor="#d90429" BorderColor="#FFD700" CornerRadius="12" Padding="20,10" HasShadow="True">
+                    <Label Text="⚔️ WAR ⚔️" TextColor="White" FontSize="18" FontAttributes="Bold" />
+                </Frame>
+            </HorizontalStackLayout>
+
+            <Button Text="DEAL"
+                    Command="{Binding DealCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    BackgroundColor="#b30000"
+                    TextColor="White"
+                    WidthRequest="220"
+                    HeightRequest="60"
+                    CornerRadius="30"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    BorderColor="#FFD700"
+                    BorderWidth="2">
+                <Button.Shadow>
+                    <Shadow Brush="Black" Offset="2,4" Opacity="0.6" Radius="5"/>
+                </Button.Shadow>
+            </Button>
+        </VerticalStackLayout>
+
+
+        <VerticalStackLayout Grid.Row="2" 
+                             VerticalOptions="Center" 
+                             HorizontalOptions="Center"
+                             Spacing="10">
+
+            <Border Stroke="#FFD700" 
+                    StrokeThickness="4" 
+                    StrokeShape="RoundRectangle 15"
+                    Padding="0"
+                    WidthRequest="240"
+                    HeightRequest="340"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    BackgroundColor="#072a14">
                 
-                <Label Text="{Binding StatusText}"
-                       FontSize="24"
-                       TextColor="White"
-                       HorizontalOptions="Center"
-                       FontAttributes="Bold"
-                       HorizontalTextAlignment="Center" />
+                <Image Source="{Binding PlayerImage}" 
+                       Aspect="AspectFill" 
+                       HorizontalOptions="Fill" 
+                       VerticalOptions="Fill" />
+            </Border>
 
-                <HorizontalStackLayout IsVisible="{Binding IsWarVisible}" HorizontalOptions="Center">
-                    <Frame BackgroundColor="#d90429" BorderColor="#FFD700" CornerRadius="12" Padding="25,10" HasShadow="True">
-                        <Label Text="⚔️ WAR ⚔️" TextColor="White" FontSize="18" FontAttributes="Bold" />
-                    </Frame>
-                </HorizontalStackLayout>
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                <Label Text="YOU" TextColor="White" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"/>
+                <Label Text="{Binding PlayerScore}" TextColor="#FFD700" FontSize="18" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
 
-                <Button Text="DEAL"
-                        Command="{Binding DealCommand}"
-                        IsEnabled="{Binding IsNotBusy}"
-                        BackgroundColor="#b30000"
-                        TextColor="White"
-                        WidthRequest="200"
-                        HeightRequest="60"
-                        CornerRadius="30"
-                        FontSize="22"
-                        FontAttributes="Bold"
-                        BorderColor="#FFD700"
-                        BorderWidth="2">
-                    <Button.Shadow>
-                        <Shadow Brush="Black" Offset="2,4" Opacity="0.6" Radius="5"/>
-                    </Button.Shadow>
-                </Button>
-            </VerticalStackLayout>
-
-
-            <Grid Grid.Row="2" RowDefinitions="*, Auto">
-                
-                <Border Grid.Row="0"
-                        Stroke="#FFD700" 
-                        StrokeThickness="4" 
-                        StrokeShape="RoundRectangle 15"
-                        Padding="0"
-                        VerticalOptions="Fill"
-                        HorizontalOptions="Center" 
-                        BackgroundColor="#072a14">
-                    
-                    <Image Source="{Binding PlayerImage}" 
-                           Aspect="AspectFit" 
-                           HorizontalOptions="Center" 
-                           VerticalOptions="Center" />
-                </Border>
-
-                <HorizontalStackLayout Grid.Row="1" HorizontalOptions="Center" Spacing="10" Margin="0,10,0,0">
-                    <Label Text="YOU" TextColor="White" FontSize="20" FontAttributes="Bold" VerticalOptions="Center"/>
-                    <Label Text="{Binding PlayerScore}" TextColor="#FFD700" FontSize="20" VerticalOptions="Center"/>
-                </HorizontalStackLayout>
-            </Grid>
-
-        </Grid>
-
-        <ContentView IsVisible="{Binding IsGameOver}" BackgroundColor="#CC000000">
+        <ContentView IsVisible="{Binding IsGameOver}" BackgroundColor="#CC000000" Grid.RowSpan="3">
             <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="30" Padding="30">
                  <Border Stroke="#FFD700" StrokeThickness="3" StrokeShape="RoundRectangle 20" Padding="40" BackgroundColor="#072a14">
                     <VerticalStackLayout Spacing="20">
@@ -109,9 +112,9 @@
                                 Command="{Binding RestartCommand}"
                                 BackgroundColor="#FFD700"
                                 TextColor="#0a3d1d"
-                                WidthRequest="200"
-                                HeightRequest="55"
-                                CornerRadius="28"
+                                WidthRequest="220"
+                                HeightRequest="60"
+                                CornerRadius="30"
                                 FontAttributes="Bold"/>
                     </VerticalStackLayout>
                  </Border>
