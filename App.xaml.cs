@@ -21,5 +21,5 @@ public partial class App : Application
 
         // Force the app to show this page immediately
         MainPage = gamePage;
-    }
+    }	
 }

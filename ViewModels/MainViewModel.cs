@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Microsoft.Maui.Devices;
 using System.Windows.Input;
 using FateRank.Logic;
 
@@ -240,4 +241,7 @@ public class MainViewModel : BaseViewModel
             IsGameOver = true;
         }
     }
+
+    public double CardWidth => Math.Min(200, DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density * 0.35);
+    public double CardHeight => CardWidth * 1.375;
 }
