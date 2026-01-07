@@ -10,7 +10,7 @@
 
         <VerticalStackLayout Grid.Row="0" 
                              VerticalOptions="Center" 
-                             HorizontalOptions="Center"
+                             HorizontalOptions="Center" 
                              Spacing="10">
             
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
@@ -23,15 +23,15 @@
                     StrokeShape="RoundRectangle 15" 
                     Padding="0"
                     WidthRequest="240"
-                    HeightRequest="340"
+                    HeightRequest="336"
                     VerticalOptions="Center"
                     HorizontalOptions="Center"
-                    BackgroundColor="#072a14">
+                    BackgroundColor="Transparent">
                 
                 <Image Source="{Binding ComputerImage}" 
-                       Aspect="AspectFill"
-                       HorizontalOptions="Fill" 
-                       VerticalOptions="Fill" />
+                       Aspect="AspectFit"
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center" />
             </Border>
         </VerticalStackLayout>
 
@@ -80,15 +80,15 @@
                     StrokeShape="RoundRectangle 15"
                     Padding="0"
                     WidthRequest="240"
-                    HeightRequest="340"
+                    HeightRequest="336"
                     VerticalOptions="Center"
                     HorizontalOptions="Center"
-                    BackgroundColor="#072a14">
+                    BackgroundColor="Transparent">
                 
                 <Image Source="{Binding PlayerImage}" 
-                       Aspect="AspectFill" 
-                       HorizontalOptions="Fill" 
-                       VerticalOptions="Fill" />
+                       Aspect="AspectFit" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center" />
             </Border>
 
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
