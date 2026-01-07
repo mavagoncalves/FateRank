@@ -1,168 +1,182 @@
-﻿using FateRank.Logic;
-using FateRank.Models;
+﻿using System.Windows.Input;
+using FateRank.Logic;
 
-namespace FateRank.Views;
+namespace FateRank.ViewModels;
 
-public partial class MainPage : ContentPage
+/// <summary>
+/// The ViewModel for the main game screen.
+/// It bridges the View (UI) and the Model (GameEngine).
+/// </summary>
+public class MainViewModel : BaseViewModel
 {
-    private GameEngine _engine = new GameEngine();
+    private readonly GameEngine _engine;
+    
+    // BACKING FIELDS (The actual data)
+    private string _playerImage;
+    private string _computerImage;
+    private string _playerScore;
+    private string _computerScore;
+    private string _statusText;
+    private bool _isWarVisible;
+    private bool _isBusy;
+    private bool _isGameOver;
+
+    // PUBLIC PROPERTIES
+    public string PlayerImage
+    {
+        get => _playerImage;
+        set { _playerImage = value; OnPropertyChanged(); }
+    }
+
+    public string ComputerImage
+    {
+        get => _computerImage;
+        set { _computerImage = value; OnPropertyChanged(); }
+    }
+
+    public string PlayerScore
+    {
+        get => _playerScore;
+        set { _playerScore = value; OnPropertyChanged(); }
+    }
+
+    public string ComputerScore
+    {
+        get => _computerScore;
+        set { _computerScore = value; OnPropertyChanged(); }
+    }
+
+    public string StatusText
+    {
+        get => _statusText;
+        set { _statusText = value; OnPropertyChanged(); }
+    }
+
+    public bool IsWarVisible
+    {
+        get => _isWarVisible;
+        set { _isWarVisible = value; OnPropertyChanged(); }
+    }
+    
+    // Controls if the buttons are clickable
+    public bool IsBusy
+    {
+        get => _isBusy;
+        set { _isBusy = value; OnPropertyChanged(); }
+    }
+
+    public bool IsGameOver
+    {
+        get => _isGameOver;
+        set { _isGameOver = value; OnPropertyChanged(); }
+    }
+
+    // COMMANDS (The clicks)
+    public ICommand DealCommand { get; }
+    public ICommand RestartCommand { get; }
 
     /// <summary>
-    /// Initializes the UI components and starts a new game.
+    /// Initializes the ViewModel and starts a new game.
     /// </summary>
-    public MainPage()
+    public MainViewModel()
     {
-        InitializeComponent();
+        _engine = new GameEngine();
+        
+        // Initialize Commands
+        DealCommand = new Command(async () => await PlayTurn());
+        RestartCommand = new Command(StartNewGame);
+
         StartNewGame();
     }
 
-	/// <summary>
-	/// Resets the game engine and updates the UI to the initial new-game state.
-	/// </summary>
-	private void StartNewGame()
-	{
-		// Reset the Engine Logic
-		_engine = new Logic.GameEngine();
-		_engine.InitializeGame(); 
+    private void StartNewGame()
+    {
+        _engine.InitializeGame();
+        
+        PlayerImage = "card_back.png";
+        ComputerImage = "card_back.png";
+        UpdateScores();
+        StatusText = "NEW GAME! DEAL TO START.";
+        IsWarVisible = false;
+        IsGameOver = false;
+        IsBusy = false;
+    }
 
-		// Reset the Visuals
-		PlayerCardImage.Source = "card_back.png";
-		ComputerCardImage.Source = "card_back.png";
-		
-		PlayerCountLabel.Text = "Deck: 27";
-		ComputerCountLabel.Text = "Deck: 27";
-		StatusLabel.Text = "NEW GAME! DEAL TO START.";
+    private async Task PlayTurn()
+    {
+        if (IsBusy) return;
+        IsBusy = true; // Lock the button
 
-		// Reset Game Over State
-		GameOverOverlay.IsVisible = false;
-		PlayBtn.IsEnabled = true;
-		WarPileVisual.IsVisible = false;
-	}
+        Card pCard, cCard;
+        string result = _engine.PlayRound(out pCard, out cCard);
 
-    /// <summary>
-    /// Handles the Play button click: plays a round, updates UI, and manages the "war" sequence when ties occur.
-    /// </summary>
-    /// <param name="sender">The Play button.</param>
-    /// <param name="e">Event arguments.</param>
-    private async void OnPlayClicked(object sender, EventArgs e)
-	{
-		PlayBtn.IsEnabled = false;
-		Card pCard, cCard;
-		string result = _engine.PlayRound(out pCard, out cCard);
+        // Update UI
+        PlayerImage = pCard?.ImageSource;
+        ComputerImage = cCard?.ImageSource;
+        StatusText = result;
 
-		// Initial reveal of the drawn cards
-		PlayerCardImage.Source = pCard?.ImageSource;
-		ComputerCardImage.Source = cCard?.ImageSource;
-		StatusLabel.Text = result;
+        if (result == "WAR!")
+        {
+            await HandleWarLoop(result);
+        }
 
-		if (result != "WAR!")
-		{
-			// If it's NOT War, unlock the button immediately
-			if (!GameOverOverlay.IsVisible)
-			{
-				PlayBtn.IsEnabled = true;
-			}
-		}
-		else 
-    	{
+        UpdateScores();
+        CheckForWinner();
+        
+        if (!IsGameOver) IsBusy = false; // Unlock button
+    }
 
-			while (result == "WAR!")
-			{
-				// Pause for 2 seconds so the user can see the cards that caused the tie
-				await Task.Delay(2000); 
+    private async Task HandleWarLoop(string result)
+    {
+        while (result == "WAR!")
+        {
+            await Task.Delay(2000);
+            IsWarVisible = true;
+            StatusText = "WAR DETECTED!";
+            
+            await Task.Delay(2000);
+            StatusText = "DEALING 3 FACE-DOWN CARDS...";
+            PlayerImage = "card_back.png";
+            ComputerImage = "card_back.png";
+            
+            await Task.Delay(2500);
+            
+            var pool = new List<Card>(); 
+            result = _engine.ExecuteWar(pool, out Card pWar, out Card cWar);
 
-				// Show War Visual and update status
-				WarPileVisual.IsVisible = true;
-				StatusLabel.Text = (StatusLabel.Text == "WAR!") ? "WAR DETECTED!" : "DOUBLE WAR DETECTED!";
-				await Task.Delay(2000);
+            if (pWar == null || cWar == null)
+            {
+                StatusText = result;
+                CheckForWinner();
+                return;
+            }
 
-				// Turn the cards face-down to signal War has started
-				StatusLabel.Text = "DEALING 3 FACE-DOWN CARDS...";
-				PlayerCardImage.Source = "card_back.png";
-				ComputerCardImage.Source = "card_back.png";
-				await Task.Delay(2500); // 2.5 seconds for dramatic effect
+            PlayerImage = pWar.ImageSource;
+            ComputerImage = cWar.ImageSource;
+            StatusText = result;
+        }
 
-				// Execute the actual War calculation
-				result = _engine.ExecuteWar(out Card pWar, out Card cWar);
+        await Task.Delay(3000);
+        IsWarVisible = false;
+    }
 
-				// check if someone ran out of cards completely during the war
-				if (pWar == null || cWar == null)
-				{
-					StatusLabel.Text = result;
-					CheckForWinner();
-					return; // STOP
-				}
-				
-				// Final reveal of the War outcome
-				PlayerCardImage.Source = pWar?.ImageSource;
-				ComputerCardImage.Source = cWar?.ImageSource;
-				StatusLabel.Text = result;
-			}
+    private void UpdateScores()
+    {
+        PlayerScore = $"Deck: {_engine.PlayerCardCount}";
+        ComputerScore = $"Deck: {_engine.ComputerCardCount}";
+    }
 
-			// Leave the final result on screen for 3 seconds before resetting
-			await Task.Delay(3000);
-			WarPileVisual.IsVisible = false;
-
-			if (!GameOverOverlay.IsVisible)
-			{
-				PlayBtn.IsEnabled = true;
-			}
-		}
-
-		// Refresh Deck counts
-		PlayerCountLabel.Text = $"Deck: {_engine.PlayerCardCount}";
-		ComputerCountLabel.Text = $"Deck: {_engine.ComputerCardCount}";
-
-		CheckForWinner();
-	}
-
-	/// <summary>
-	/// Inspects current card counts to determine if the player or computer has won,
-	///  and updates the UI accordingly.
-	/// </summary>
-	private void CheckForWinner()
-	{
-		// PLAYER WINS
-		if (_engine.PlayerCardCount >= 54 || _engine.ComputerCardCount == 0)
-		{
-			WinnerText.TextColor = Colors.Gold; // Gold text for Winner
-			WinnerText.Text = "CONGRATULATIONS!\nYOU CLEARED THE TABLE 🏆";
-			
-			GameOverOverlay.IsVisible = true;
-			PlayBtn.IsEnabled = false;
-		}
-		
-		// PLAYER LOOSES
-		else if (_engine.ComputerCardCount >= 54 || _engine.PlayerCardCount == 0)
-		{
-			WinnerText.TextColor = Colors.Red;
-			WinnerText.Text = "GAME OVER\nYOU RAN OUT OF CARDS 💀";
-			
-			GameOverOverlay.IsVisible = true;
-			PlayBtn.IsEnabled = false;
-		}
-	}
-
-	/// <summary>
-	/// Displays the provided end-of-game message, shows the overlay, and disables further play.
-	/// </summary>
-	/// <param name="message">The message to display to the user.</param>
-	private void ShowEndGame(string message)
-	{
-		WinnerText.Text = message;
-		// This makes the dark overlay visible over the table
-		GameOverOverlay.IsVisible = true;
-		// This stops the user from clicking "Deal" after the game is over
-		PlayBtn.IsEnabled = false;
-	}
-
-	/// <summary>
-	/// Handles the Restart button click and starts a new game.
-	/// </summary>
-	/// <param name="sender">The Restart button.</param>
-	/// <param name="e">Event arguments.</param>
-	private void OnRestartClicked(object sender, EventArgs e)
-	{
-		StartNewGame(); 
-	}
+    private void CheckForWinner()
+    {
+        if (_engine.PlayerCardCount >= 54 || _engine.ComputerCardCount == 0)
+        {
+            StatusText = "VICTORY! YOU CLEARED THE TABLE 🏆";
+            IsGameOver = true;
+        }
+        else if (_engine.ComputerCardCount >= 54 || _engine.PlayerCardCount == 0)
+        {
+            StatusText = "GAME OVER... YOU RAN OUT OF CARDS 💀";
+            IsGameOver = true;
+        }
+    }
 }

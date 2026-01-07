@@ -1,74 +1,58 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FateRank.ViewModels"
              x:Class="FateRank.Views.MainPage"
              BackgroundColor="#0a3d1d">
+
+    <ContentPage.BindingContext>
+        <vm:MainViewModel />
+    </ContentPage.BindingContext>
 
     <Grid>
         <Grid RowDefinitions="*, Auto, *" Padding="20">
             
-            <VerticalStackLayout Grid.Row="0" VerticalOptions="Start" Spacing="8">
+            <VerticalStackLayout Grid.Row="0">
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
                     <Label Text="COMPUTER" TextColor="White" FontSize="20" FontAttributes="Bold" />
-                    <Label x:Name="ComputerCountLabel" Text="Deck: 27" TextColor="#FFD700" FontSize="20" />
+                    <Label Text="{Binding ComputerScore}" TextColor="#FFD700" FontSize="20" />
                 </HorizontalStackLayout>
                 
-                <Border Stroke="#FFD700" StrokeThickness="4" StrokeShape="RoundRectangle 15" 
-                        WidthRequest="145" HeightRequest="195" HorizontalOptions="Center" BackgroundColor="#072a14">
-                    <Image x:Name="ComputerCardImage" Aspect="AspectFit" HeightRequest="185" />
+                <Border Stroke="#FFD700" StrokeThickness="4">
+                    <Image Source="{Binding ComputerImage}" Aspect="AspectFit" HeightRequest="185" />
                 </Border>
             </VerticalStackLayout>
 
-            <VerticalStackLayout Grid.Row="1" VerticalOptions="Center" Spacing="20">
-                <Label x:Name="StatusLabel" Text="READY FOR THE DEAL?" FontSize="22" TextColor="White" 
-                       HorizontalOptions="Center" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+            <VerticalStackLayout Grid.Row="1" Spacing="20">
+                <Label Text="{Binding StatusText}" FontSize="22" TextColor="White" HorizontalOptions="Center" />
 
-                <HorizontalStackLayout x:Name="WarPileVisual" IsVisible="False" HorizontalOptions="Center">
-                    <Frame BackgroundColor="#8b0000" BorderColor="#FFD700" CornerRadius="12" Padding="20,10">
-                        <Label Text="STAKING +3 HIDDEN CARDS " TextColor="White" FontAttributes="Bold" />
+                <HorizontalStackLayout IsVisible="{Binding IsWarVisible}" HorizontalOptions="Center">
+                    <Frame BackgroundColor="#8b0000" BorderColor="#FFD700" Padding="20,10">
+                        <Label Text="⚠️ WAR DETECTED ⚠️" TextColor="White" FontAttributes="Bold" />
                     </Frame>
                 </HorizontalStackLayout>
 
-                <Button x:Name="PlayBtn" Text="DEAL" Clicked="OnPlayClicked" BackgroundColor="#b30000" 
-                        TextColor="White" WidthRequest="200" HeightRequest="65" CornerRadius="32" 
-                        FontSize="22" FontAttributes="Bold" BorderColor="#FFD700" BorderWidth="1" />
+                <Button Text="DEAL" 
+                        Command="{Binding DealCommand}" 
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                        BackgroundColor="#b30000" TextColor="White" HeightRequest="65" CornerRadius="32" />
             </VerticalStackLayout>
 
-            <VerticalStackLayout Grid.Row="2" VerticalOptions="End" Spacing="8">
-                <Border Stroke="#FFD700" StrokeThickness="4" StrokeShape="RoundRectangle 15" 
-                        WidthRequest="145" HeightRequest="195" HorizontalOptions="Center" BackgroundColor="#072a14">
-                    <Image x:Name="PlayerCardImage" Aspect="AspectFit" HeightRequest="185" />
+            <VerticalStackLayout Grid.Row="2">
+                <Border Stroke="#FFD700" StrokeThickness="4">
+                    <Image Source="{Binding PlayerImage}" Aspect="AspectFit" HeightRequest="185" />
                 </Border>
 
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
                     <Label Text="YOU" TextColor="White" FontSize="20" FontAttributes="Bold" />
-                    <Label x:Name="PlayerCountLabel" Text="Deck: 27" TextColor="#FFD700" FontSize="20" />
+                    <Label Text="{Binding PlayerScore}" TextColor="#FFD700" FontSize="20" />
                 </HorizontalStackLayout>
             </VerticalStackLayout>
         </Grid>
-
-        <ContentView x:Name="GameOverOverlay" 
-                    Grid.Row="0" 
-                    Grid.RowSpan="3" 
-                    IsVisible="False" 
-                    BackgroundColor="Black"> 
-
+        
+        <ContentView IsVisible="{Binding IsGameOver}" BackgroundColor="Black" Grid.RowSpan="3">
             <VerticalStackLayout VerticalOptions="Center" Spacing="30">
-                <Label x:Name="WinnerText" 
-                    TextColor="#FFD700" 
-                    FontSize="36" 
-                    FontAttributes="Bold" 
-                    HorizontalOptions="Center" 
-                    HorizontalTextAlignment="Center" />
-                    
-                <Button Text="NEW GAME" 
-                        Clicked="OnRestartClicked" 
-                        BackgroundColor="#FFD700" 
-                        TextColor="Black" 
-                        WidthRequest="220" 
-                        HeightRequest="50" 
-                        CornerRadius="15" 
-                        FontAttributes="Bold"/>
+                <Label Text="{Binding StatusText}" TextColor="Gold" FontSize="36" HorizontalTextAlignment="Center" />
+                <Button Text="NEW GAME" Command="{Binding RestartCommand}" BackgroundColor="White" TextColor="Black" />
             </VerticalStackLayout>
         </ContentView>
     </Grid>
