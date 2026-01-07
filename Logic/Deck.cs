@@ -7,6 +7,9 @@ public class Deck
 {
     private List<Card> _cards = new List<Card>();
 
+    /// <summary>
+    /// Initializes the internal card list to a standard 52-card deck (Jokers excluded).
+    /// </summary>
     public void Initialize()
     {
         _cards.Clear();
@@ -25,6 +28,9 @@ public class Deck
         }
     }
 
+    /// <summary>
+    /// Randomly shuffles the deck in place using the Fisher–Yates algorithm.
+    /// </summary>
     public void Shuffle()
     {
         Random rng = new Random();
@@ -37,6 +43,10 @@ public class Deck
         }
     }
 
+    /// <summary>
+    /// Returns the internal list of cards currently in the deck.
+    /// </summary>
+    /// <returns>The list of <see cref="Card"/> objects in the deck.</returns>
     public List<Card> GetCards()
     {
         return _cards;

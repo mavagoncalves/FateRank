@@ -2,8 +2,14 @@
 using FateRank.ViewModels;
 namespace FateRank;
 
+/// <summary>
+/// The application class which creates and displays the main page for the app.
+/// </summary>
 public partial class App : Application
 {
+    /// <summary>
+    /// Initializes the application: sets up the main page and assigns its view model.
+    /// </summary>
     public App()
     {
         InitializeComponent();

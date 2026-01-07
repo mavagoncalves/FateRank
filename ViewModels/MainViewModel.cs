@@ -7,6 +7,9 @@ namespace FateRank.ViewModels;
 
 public class MainViewModel : BaseViewModel
 {
+    /// <summary>
+    /// Handles all the UI connections with the game logic
+    /// </summary>
     private readonly GameEngine _engine;
 
     private string _playerImage = "card_back.png";
@@ -19,42 +22,63 @@ public class MainViewModel : BaseViewModel
     private bool _isBusy;
     private bool _isGameOver;
 
+    /// <summary>
+    /// Gets or sets the source image filename for the player's visible card.
+    /// </summary>
     public string PlayerImage
     {
         get => _playerImage;
         set { _playerImage = value; OnPropertyChanged(); }
     }
 
+    /// <summary>
+    /// Gets or sets the source image filename for the computer's visible card.
+    /// </summary>
     public string ComputerImage
     {
         get => _computerImage;
         set { _computerImage = value; OnPropertyChanged(); }
     }
 
+    /// <summary>
+    /// Gets or sets the player's score text shown in the UI (e.g., "Deck: 27").
+    /// </summary>
     public string PlayerScore
     {
         get => _playerScore;
         set { _playerScore = value; OnPropertyChanged(); }
     }
 
+    /// <summary>
+    /// Gets or sets the computer's score text shown in the UI (e.g., "Deck: 27").
+    /// </summary>
     public string ComputerScore
     {
         get => _computerScore;
         set { _computerScore = value; OnPropertyChanged(); }
     }
 
+    /// <summary>
+    /// Gets or sets the current status text displayed to the user.
+    /// </summary>
     public string StatusText
     {
         get => _statusText;
         set { _statusText = value; OnPropertyChanged(); }
     }
 
+    /// <summary>
+    /// Controls visibility of the war UI element.
+    /// </summary>
     public bool IsWarVisible
     {
         get => _isWarVisible;
         set { _isWarVisible = value; OnPropertyChanged(); }
     }
 
+    /// <summary>
+    /// Indicates whether the UI is currently busy (e.g., playing a turn).
+    /// </summary>
     public bool IsBusy
     {
         get => _isBusy;
@@ -66,17 +90,33 @@ public class MainViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Convenience inverse of <see cref="IsBusy"/> for binding.
+    /// </summary>
     public bool IsNotBusy => !IsBusy;
 
+    /// <summary>
+    /// Indicates whether the game has ended.
+    /// </summary>
     public bool IsGameOver
     {
         get => _isGameOver;
         set { _isGameOver = value; OnPropertyChanged(); }
     }
 
+    /// <summary>
+    /// Command bound to the Deal/Play action in the UI.
+    /// </summary>
     public ICommand DealCommand { get; }
+
+    /// <summary>
+    /// Command bound to the Restart action in the UI.
+    /// </summary>
     public ICommand RestartCommand { get; }
 
+    /// <summary>
+    /// Initializes the main view model, configures commands, and starts a new game.
+    /// </summary>
     public MainViewModel()
     {
         _engine = new GameEngine();
@@ -86,6 +126,9 @@ public class MainViewModel : BaseViewModel
         StartNewGame();
     }
 
+    /// <summary>
+    /// Resets engine state and UI-bound properties to the initial new-game values.
+    /// </summary>
     private void StartNewGame()
     {
         _engine.InitializeGame();
@@ -99,6 +142,9 @@ public class MainViewModel : BaseViewModel
         IsBusy = false;
     }
 
+    /// <summary>
+    /// Plays a single turn: invokes the engine, updates image and status properties, and handles wars when they occur.
+    /// </summary>
     private async Task PlayTurn()
     {
         if (IsBusy) return;
@@ -123,6 +169,12 @@ public class MainViewModel : BaseViewModel
         if (!IsGameOver) IsBusy = false;
     }
 
+    /// <summary>
+    /// Handles the asynchronous war loop by staking cards into the war pool and resolving wars until a winner is found.
+    /// </summary>
+    /// <param name="result">The initial result string indicating a war.</param>
+    /// <param name="initialPCard">The player's card that started the war.</param>
+    /// <param name="initialCCard">The computer's card that started the war.</param>
     private async Task HandleWarLoop(string result, Card initialPCard, Card initialCCard)
     {
         var warPool = new List<Card> { initialPCard, initialCCard };
@@ -161,6 +213,9 @@ public class MainViewModel : BaseViewModel
         IsWarVisible = false;
     }
 
+    /// <summary>
+    /// Updates the UI-bound score strings from the engine's current player card counts.
+    /// </summary>
     private void UpdateScores()
     {
         // Now accessing properties that redirect to the Player class
@@ -168,6 +223,9 @@ public class MainViewModel : BaseViewModel
         ComputerScore = $"Deck: {_engine.ComputerCardCount}";
     }
 
+    /// <summary>
+    /// Evaluates if either player has reached a terminal win/lose condition and sets the game-over state.
+    /// </summary>
     private void CheckForWinner()
     {
         // 54 total cards in deck

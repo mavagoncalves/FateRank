@@ -4,12 +4,18 @@ namespace FateRank.Logic;
 
 public class GameEngine
 {
+    /// <summary>
+    /// Handles all the game logic 
+    /// </summary>
     public Player Human { get; private set; } = null!;
     public Player Computer { get; private set; } = null!;
 
     public int PlayerCardCount => Human?.GetCardCount() ?? 0;
     public int ComputerCardCount => Computer?.GetCardCount() ?? 0;
 
+    /// <summary>
+    /// Creates players, initializes and shuffles a standard deck, and deals half the cards to each player.
+    /// </summary>
     public void InitializeGame()
     {
         Human = new Player("You");
@@ -33,6 +39,12 @@ public class GameEngine
         Computer.ReceiveCard(deck2);
     }
 
+    /// <summary>
+    /// Plays a single round by drawing a card from each player and comparing them.
+    /// </summary>
+    /// <param name="pCard">Outputs the player's drawn card for this round.</param>
+    /// <param name="cCard">Outputs the computer's drawn card for this round.</param>
+    /// <returns>A string describing the result: player win, computer win, "WAR!", or "GAME OVER" if cards are missing.</returns>
     public string PlayRound(out Card pCard, out Card cCard)
     {
         pCard = Human.PlayCard()!;
@@ -63,6 +75,14 @@ public class GameEngine
         }
     }
 
+    /// <summary>
+    /// Executes the war sequence by placing stake cards into the provided pool, drawing battle cards,
+    /// and awarding the pool to the winner. If a player is unable to draw required cards, forces game over.
+    /// </summary>
+    /// <param name="pool">A list used to accumulate the cards involved in the war (stakes and battle cards).</param>
+    /// <param name="pWar">Outputs the player's final face-up war card (may be null if insufficient cards).</param>
+    /// <param name="cWar">Outputs the computer's final face-up war card (may be null if insufficient cards).</param>
+    /// <returns>A string indicating the war outcome, "WAR!" for another tie, or a game-over message if cards are insufficient.</returns>
     public string ExecuteWar(List<Card> pool, out Card pWar, out Card cWar)
     {
         // 1. Stake 3 hidden cards
@@ -111,6 +131,10 @@ public class GameEngine
         }
     }
 
+    /// <summary>
+    /// Forces the game to end by emptying the losing player's cards, based on current counts.
+    /// This method repeatedly plays cards from the trailing player's hand until none remain.
+    /// </summary>
     public void ForceGameOver()
     {
         if (Human.GetCardCount() > Computer.GetCardCount())
