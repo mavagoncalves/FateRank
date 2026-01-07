@@ -26,6 +26,9 @@ public class Deck
                 _cards.Add(new Card(rank, suit));
             }
         }
+        //Adding jokers
+        _cards.Add(new Card(Rank.Joker, Suit.Hearts));
+        _cards.Add(new Card(Rank.Joker, Suit.Spades));
     }
 
     /// <summary>

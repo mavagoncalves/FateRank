@@ -21,19 +21,20 @@ public class GameEngine
         Human = new Player("You");
         Computer = new Player("Computer");
 
-        // 1. Create and Shuffle
+        // Create and Shuffle
         Deck deck = new Deck();
         deck.Initialize();
         deck.Shuffle();
 
-        List<Card> allCards = deck.GetCards();
+        List<Card> allCards = deck.GetCards(); // 54 cards
 
-        // 2. Deal 26 cards to each
+        // Deal
+        int halfDeck = allCards.Count / 2; // 27 each
         List<Card> deck1 = new List<Card>();
         List<Card> deck2 = new List<Card>();
 
-        for (int i = 0; i < 26; i++) deck1.Add(allCards[i]);
-        for (int i = 26; i < 52; i++) deck2.Add(allCards[i]);
+        for (int i = 0; i < halfDeck; i++) deck1.Add(allCards[i]);
+        for (int i = halfDeck; i < allCards.Count; i++) deck2.Add(allCards[i]);
 
         Human.ReceiveCard(deck1);
         Computer.ReceiveCard(deck2);
