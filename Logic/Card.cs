@@ -76,7 +76,7 @@ public class Card : IComparable<Card>
     /// <summary>
     /// Compares this card to another card based on Rank.
     /// </summary>
-    public int CompareTo(Card other)
+    public int CompareTo(Card? other)
     {
         if (other == null) return 1;
         return Rank.CompareTo(other.Rank);

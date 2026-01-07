@@ -2,73 +2,60 @@ using System.Collections.Generic;
 
 namespace FateRank.Logic;
 
-/// <summary>
-/// Manages the core game logic, coordinating Players and the Deck.
-/// Follows MVVM architecture by exposing methods for the ViewModel.
-/// </summary>
 public class GameEngine
 {
-    private Player _player1;
-    private Player _computer;
-    private Deck _deck;
+    public Player Human { get; private set; } = null!;
+    public Player Computer { get; private set; } = null!;
 
-    /// <summary>
-    /// Gets the number of cards held by the human player.
-    /// </summary>
-    public int PlayerCardCount => _player1.GetCardCount();
+    public int PlayerCardCount => Human?.GetCardCount() ?? 0;
+    public int ComputerCardCount => Computer?.GetCardCount() ?? 0;
 
-    /// <summary>
-    /// Gets the number of cards held by the computer.
-    /// </summary>
-    public int ComputerCardCount => _computer.GetCardCount();
-
-    /// <summary>
-    /// Initializes the game: creates players, shuffles deck, and deals cards.
-    /// </summary>
     public void InitializeGame()
     {
-        _player1 = new Player("You");
-        _computer = new Player("Computer");
-        _deck = new Deck();
+        Human = new Player("You");
+        Computer = new Player("Computer");
 
-        _deck.Shuffle();
+        // 1. Create and Shuffle
+        Deck deck = new Deck();
+        deck.Initialize();
+        deck.Shuffle();
 
-        bool dealToPlayer = true;
-        Card drawn;
-        while ((drawn = _deck.DealCard()) != null)
-        {
-            if (dealToPlayer) _player1.ReceiveCard(new[] { drawn });
-            else _computer.ReceiveCard(new[] { drawn });
+        List<Card> allCards = deck.GetCards();
 
-            dealToPlayer = !dealToPlayer;
-        }
+        // 2. Deal 26 cards to each
+        List<Card> deck1 = new List<Card>();
+        List<Card> deck2 = new List<Card>();
+
+        for (int i = 0; i < 26; i++) deck1.Add(allCards[i]);
+        for (int i = 26; i < 52; i++) deck2.Add(allCards[i]);
+
+        Human.ReceiveCard(deck1);
+        Computer.ReceiveCard(deck2);
     }
 
-    /// <summary>
-    /// Executes a single round of play.
-    /// </summary>
-    /// <param name="pCard">The card played by the human.</param>
-    /// <param name="cCard">The card played by the computer.</param>
-    /// <returns>A status string (Win/Loss/War).</returns>
     public string PlayRound(out Card pCard, out Card cCard)
     {
-        pCard = _player1.PlayCard();
-        cCard = _computer.PlayCard();
+        pCard = Human.PlayCard()!;
+        cCard = Computer.PlayCard()!;
 
-        if (pCard == null || cCard == null) return "Game Over";
-
-        int comparison = pCard.CompareTo(cCard);
-        var loot = new List<Card> { pCard, cCard };
-
-        if (comparison > 0)
+        // Handle empty hand / end of game safety
+        if (pCard == null || cCard == null)
         {
-            _player1.ReceiveCard(loot);
-            return "YOU WIN THIS ROUND!";
+            return "GAME OVER";
         }
-        else if (comparison < 0)
+
+        // 3. Use your Card class's built-in comparison
+        int comparison = pCard.CompareTo(cCard);
+
+        if (comparison > 0) // Player is higher
         {
-            _computer.ReceiveCard(loot);
-            return "CPU WINS THIS ROUND!";
+            Human.ReceiveCard(new List<Card> { pCard, cCard });
+            return "YOU WON THIS HAND!";
+        }
+        else if (comparison < 0) // Computer is higher
+        {
+            Computer.ReceiveCard(new List<Card> { cCard, pCard });
+            return "COMPUTER WON THIS HAND";
         }
         else
         {
@@ -76,46 +63,63 @@ public class GameEngine
         }
     }
 
-    /// <summary>
-    /// Handles the War scenario logic.
-    /// </summary>
-    /// <param name="currentPool">The list of cards currently at stake.</param>
-    /// <param name="pWar">The visible card played by the human.</param>
-    /// <param name="cWar">The visible card played by the computer.</param>
-    /// <returns>A status string indicating the War result.</returns>
-    public string ExecuteWar(List<Card> currentPool, out Card pWar, out Card cWar)
+    public string ExecuteWar(List<Card> pool, out Card pWar, out Card cWar)
     {
-        pWar = _player1.PlayCard();
-        cWar = _computer.PlayCard();
-
-        // Burn 3 cards (Face down)
+        // 1. Stake 3 hidden cards
         for (int i = 0; i < 3; i++)
         {
-            Card p = _player1.PlayCard();
-            Card c = _computer.PlayCard();
-            if (p != null) currentPool.Add(p);
-            if (c != null) currentPool.Add(c);
+            Card? pBurn = Human.PlayCard();
+            if (pBurn != null) pool.Add(pBurn);
+
+            Card? cBurn = Computer.PlayCard();
+            if (cBurn != null) pool.Add(cBurn);
         }
 
-        // Add the face-up deciding cards
-        if (pWar != null) currentPool.Add(pWar);
-        if (cWar != null) currentPool.Add(cWar);
+        // 2. Play Battle Cards
+        pWar = Human.PlayCard()!;
+        cWar = Computer.PlayCard()!;
 
-        if (pWar == null || cWar == null) return "Not enough cards!";
+        if (pWar == null || cWar == null)
+        {
+            // Recover cards if someone runs out mid-war
+            if (pWar != null) pool.Add(pWar);
+            if (cWar != null) pool.Add(cWar);
+            
+            ForceGameOver();
+            return "GAME OVER (Not enough cards)";
+        }
 
+        pool.Add(pWar);
+        pool.Add(cWar);
+
+        // 3. Compare War Cards
         int comparison = pWar.CompareTo(cWar);
 
         if (comparison > 0)
         {
-            _player1.ReceiveCard(currentPool);
+            Human.ReceiveCard(pool);
             return "YOU WON THE WAR!";
         }
         else if (comparison < 0)
         {
-            _computer.ReceiveCard(currentPool);
-            return "CPU WON THE WAR!";
+            Computer.ReceiveCard(pool);
+            return "COMPUTER WON THE WAR";
         }
+        else
+        {
+            return "WAR!";
+        }
+    }
 
-        return "WAR!";
+    public void ForceGameOver()
+    {
+        if (Human.GetCardCount() > Computer.GetCardCount())
+        {
+            while(Computer.PlayCard() != null) { } 
+        }
+        else
+        {
+            while(Human.PlayCard() != null) { }
+        }
     }
 }

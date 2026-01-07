@@ -35,7 +35,7 @@ public class Player
     /// Plays the top card from the player's hand.
     /// </summary>
     /// <returns>The card, or null if empty.</returns>
-    public Card PlayCard()
+    public Card? PlayCard()
     {
         return _hand.Count > 0 ? _hand.Dequeue() : null;
     }
