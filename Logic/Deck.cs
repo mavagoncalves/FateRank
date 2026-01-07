@@ -4,33 +4,38 @@ using System.Collections.Generic;
 namespace FateRank.Logic;
 
 /// <summary>
-/// Represents a standard deck of playing cards.
-/// Responsible for creating the initial set of cards, shuffling them, and dealing them out.
+/// Represents a standard deck of 54 playing cards (52 standard + 2 Jokers).
+/// Responsible for creation, shuffling, and dealing.
 /// </summary>
 public class Deck
 {
-    // The internal list of cards currently in the deck.
     private List<Card> _cards = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Deck"/> class.
-    /// Automatically generates a full 52-card deck upon creation.
+    /// Creates 52 standard cards and adds 2 Jokers (Red and Black).
     /// </summary>
     public Deck()
     {
-        // Loop through every Suit (Clubs, Diamonds, Hearts, Spades)
+        // 1. Add standard 52 cards
         foreach (Suit s in Enum.GetValues(typeof(Suit)))
         {
-            // Loop through every Rank (2 through Ace)
             foreach (Rank r in Enum.GetValues(typeof(Rank)))
             {
+                if (r == Rank.Joker) continue; // Skip Joker in main loop
                 _cards.Add(new Card(r, s));
             }
         }
+
+        // 2. Add the 2 Jokers
+        // Hearts = Red Joker
+        _cards.Add(new Card(Rank.Joker, Suit.Hearts));
+        // Spades = Black Joker
+        _cards.Add(new Card(Rank.Joker, Suit.Spades));
     }
 
     /// <summary>
-    /// Randomizes the order of the cards in the deck using the Fisher-Yates shuffle algorithm.
+    /// Randomizes the order of the cards using the Fisher-Yates algorithm.
     /// </summary>
     public void Shuffle()
     {
@@ -40,7 +45,6 @@ public class Deck
         {
             n--;
             int k = rng.Next(n + 1);
-            // Swap the cards
             Card value = _cards[k];
             _cards[k] = _cards[n];
             _cards[n] = value;
@@ -50,11 +54,10 @@ public class Deck
     /// <summary>
     /// Removes and returns the top card from the deck.
     /// </summary>
-    /// <returns>The top <see cref="Card"/>, or null if the deck is empty.</returns>
+    /// <returns>The top card, or null if empty.</returns>
     public Card DealCard()
     {
         if (_cards.Count == 0) return null;
-
         var card = _cards[0];
         _cards.RemoveAt(0);
         return card;
